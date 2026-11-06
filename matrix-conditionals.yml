@@ -1,0 +1,34 @@
+name: matrix conditionals
+on:
+  workflow_dispatch: 
+
+# "Concurrency " controls how  many runs of a workflow can be in progress at the same time.
+
+# "matrix" enables executing multiple copies of a job with different configs
+
+concurrency: 
+  group: ${{github.workflow}}-${{github.ref}} # This ensures that only one run of the workflow is in progress for a given branch or tag.
+  cancel-in-progress: true # This cancels any in-progress runs of the workflow if a new run is triggered for the same branch or tag.
+
+jobs:
+  matrix-job:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        number: [1,2]
+        letter: [a,b,c]
+        exclude:
+          - number: 1
+            letter: c
+    timeout-minutes: 5
+
+    steps:
+      - name: echo number and letter
+        run: |
+         echo "Number: ${{matrix.number}}"
+         echo "Letter: ${{matrix.letter}}"
+
+      - name: Run everywhere except 2c
+        if: ${{ !(matrix.number ==2 && matrix.letter == 'c')}}
+        run: echo 'this  steps runs for ${{matrix.number}}-${{matrix.letter}}'
