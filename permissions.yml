@@ -1,0 +1,99 @@
+###########
+# default  permissions
+############
+permissions:
+  contents: read
+  packages: read
+
+
+##############
+# all permission types
+##############
+permissions:
+  actions: read|write |none
+  attestations: read|write|none
+  checks: read |write | none
+  contents: read|write |none
+  deployments: read|write |none
+  id-token: write|none
+  issues: read|write |none
+  models: read| none
+  discussions: read|write|none
+  packages: read |write | none
+  pages: read|write |none
+  pull-requests: read |write |none
+  security-events: read |write |none
+  statuses: read |write |none
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+name: Permissions
+on:
+  workflow_dispatch:
+
+jobs:
+  read-only-pr:
+  runs-on: ubuntu-latest
+  permissions:
+    pull-requests: read
+  continue-on-error: true # avoids failing the workflow if the job fails due to insufficient permissions
+  
+  steps:
+   - uses: actions/checkout@v4
+   - name: install github cli
+     run: |
+        sudo  apt update -qq && sudo apt install gh -y
+
+   - name: list the first 5 open PRs (allowed)
+     run: |
+          gh pr list --limit 5
+     env: 
+       GH_TOKEN: ${{ github.token }}
+   - name: attempt to edit a PR (not allowed)
+     run: |
+          gh pr edit 1 --add-label "documentation"
+     env: 
+       GH_TOKEN: ${{ github.token }}
+    
+   - name: confirm the failure
+     if: failure()
+     run: |
+            echo "The previous step failed as expected due to insufficient permissions." 
+
+
+  read-write-pr:
+   runs-on: ubuntu-latest
+   permissions:
+        pull-requests: write
+   steps:
+      - uses: actions/checkout@v4
+      - name: install github cli
+        run: |
+           sudo  apt update -qq && sudo apt install gh -y
+
+      - name: list the first 5 open PRs (allowed)
+        run: |
+             gh pr list --limit 5
+        env: 
+          GH_TOKEN: ${{ github.token }}
+      - name: edit a PR (allowed)
+        run: |
+             gh pr edit 1 --add-label "documentation"
+        env: 
+          GH_TOKEN: ${{ github.token }}
