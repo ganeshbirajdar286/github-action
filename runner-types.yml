@@ -1,0 +1,78 @@
+name: Runner types
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ##########################################
+  # GITHUB HOSTED RUNNERS
+  ##########################################
+  github-hosted-ubuntu-vm:
+    name: Ubuntu 24.04 VM
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "Running on $(lsb_release -ds)"
+
+  github-hosted-windows-vm:
+    name: Windows 2022 VM
+    runs-on: windows-2022
+    steps:
+      - run: echo "Running on Windows Server 2022"
+
+  github-hosted-macos-vm:
+    name: macOS 14 VM
+    runs-on: macos-14
+    steps:
+      - run: echo "Running on macOS 14"
+
+  # Running inside of a container (on an Ubuntu VM)
+  github-hosted-container:
+    name: Ubuntu 24.04 VM + Alpine container
+    runs-on: ubuntu-24.04
+    container:
+      image: alpine:3.20
+    steps:
+      - run: cat /etc/os-release
+
+  # Running on a larger VM (needs a paid plan + a larger runner
+  # created in your org settings with this group and label)
+  github-hosted-larger-vm:
+    name: Larger Ubuntu VM (16 core)
+    runs-on:
+      group: ubuntu-runners # custom group name
+      labels: ubuntu-24.04-16core # custom labels
+    steps:
+      - run: nproc
+
+  ##########################################
+  # 3RD PARTY HOSTED RUNNERS (Namespace)
+  # Requires a Namespace account connected to your GitHub org
+  ##########################################
+  third-party-default:
+    name: Namespace default profile
+    runs-on: namespace-profile-default
+    steps:
+      - run: echo "Running on Namespace runner"
+
+  third-party-arm64:
+    name: Namespace ARM64 profile
+    runs-on: namespace-profile-default-arm64
+    steps:
+      - run: uname -m
+
+  third-party-custom-image:
+    name: Namespace custom image profile
+    runs-on: namespace-profile-custom-image
+    steps:
+      - run: echo "Running on Namespace custom image"
+
+  ##########################################
+  # SELF HOSTED RUNNERS
+  # Register a runner with this label first, otherwise the job
+  # will sit in the queue forever
+  ##########################################
+  self-hosted:
+    name: My self-hosted runner
+    runs-on: my-self-hosted-runner-name
+    steps:
+      - run: echo "Running on my own machine"
