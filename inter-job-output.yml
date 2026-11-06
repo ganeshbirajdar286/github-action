@@ -1,0 +1,24 @@
+name: passing variable inter-job output
+on: 
+  workflow_dispatch:
+
+jobs:
+   # job-1: This job generates an output variable and passes it to job-2.
+   job-1:
+     run-on: ubuntu-latest
+    # This defines an output variable for the job.
+     outputs:
+        username: ${{steps.generate.outputs.username}} 
+
+     steps:
+       - name: step-1
+         id: generate 
+         run: echo "username=ganesh">>"$GITHUB_OUTPUT"
+
+     # job-2: This job receives the output variable from job-1 and uses it.
+   job-2:
+      needs: job-1
+      run-on: ubuntu-latest
+      steps:
+        - name: step-1
+          run: echo "The value of username is ${{needs.job-1.outputs.username}}"  # output = the  value of username is ganesh
