@@ -21,7 +21,7 @@ A practical reference guide to commonly used GitHub Actions workflows, including
 
 ## 1. Inter-Job Output → Input
 
-![Inter-Job Output to Input](./images/image.png)
+![Inter-Job Output to Input](./image.png)
 
 **Purpose:** Share data between different jobs in a GitHub Actions workflow.
 
