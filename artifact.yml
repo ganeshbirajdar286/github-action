@@ -1,0 +1,37 @@
+name: Artifact
+on: 
+  workflow_dispatch:
+
+jobs:
+
+
+  artifact-job:
+    name: Artifact Job
+    runs-on: ubuntu-latest
+    steps:
+      - name: create artifact
+        run: | 
+            echo "This is a sample artifact" >> artifact.txt
+            echo "this is generated on $(date)" >> artifact.txt
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sample-artifact
+          path: artifact.txt
+
+      
+  download-artifact-job:
+    name: Download Artifact Job
+    runs-on: ubuntu-latest
+    needs: artifact-job
+    steps:
+      - name: download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: sample-artifact
+      
+      - name: display artifact content
+        run: |
+          echo "Content of the downloaded artifact:"
+          cat sample-artifact/artifact.txt
