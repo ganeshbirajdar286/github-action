@@ -1,0 +1,44 @@
+name: tiggering events
+
+on:
+  push:   # this is a push event trigger
+    branches:
+      - main
+
+
+pull_request: # this is a pull request event trigger
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'src/**'
+      - '!docs/**'  # this excludes any changes in the docs directory from triggering the workflow
+      
+schedule: # this is a scheduled event trigger
+  - cron: '0 0 * * *' # Runs every day at midnight
+
+
+workflow_dispatch: # this is a manual trigger that allows you to run the workflow from the GitHub Actions UI
+
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 1
+        run: echo "This is Job 1"
+
+  job2:
+    needs: job1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 2
+        run: echo "This is Job 2, which depends on Job 1"
+  job3:
+    needs:
+      - job1
+      - job2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 3
+        run: echo "This is Job 3, which depends on Job 2"

@@ -1,0 +1,11 @@
+name: step type
+on:
+  workflow_dispatch:
+
+jobs:
+  say-hello-bash:
+    runs-on: ubuntu-latest
+    steps:
+      - name: say hello
+      - run : echo "Hello, World!"
+
