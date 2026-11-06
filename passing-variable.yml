@@ -1,0 +1,36 @@
+name: passing variable  using intra-job and inter-job
+on:
+  workflow_dispatch: # this is a manual trigger that allows you to run the workflow from the GitHub Actions UI
+
+jobs:
+    # 1. Intra-job output → input
+  job-1:
+    run-on: ubuntu-latest
+    # Passing a variable from one step to another step within the same job.
+
+    # Write the variable to $GITHUB_OUTPUT.
+    # Access it using ${{ steps.STEP_ID.outputs.VARIABLE }}.
+    steps:
+      - name: step-1
+        id: generate
+        run: echo "foo=bar" >> "$GITHUB_OUTPUT"
+      
+      - name: step-2
+        run: echo "The value of foo is ${{ steps.generate.outputs.foo }}"  # output = the  value of foo is bar
+
+    # 2. Inter-job environment variable 
+  job-2:
+    run-on: ubuntu-latest
+    # Passing a variable from one job to another job using environment variables.
+
+
+    # Write to $GITHUB_ENV.
+    # Access it using $VARIABLE.
+    steps:
+      - name: step-1
+        run: echo "foo=bar" >> "$GITHUB_ENV"
+      
+      - name: step-2
+        run: echo "The value of foo is $foo"  # output = the  value of foo is bar
+
+    
